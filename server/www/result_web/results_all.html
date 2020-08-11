@@ -7,11 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <title>uic苑舍意见反馈</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-red.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="../res/icon.css">
+    <link rel="stylesheet" href="../res/material.min.css">
+    <script src="../res/vue.js"></script>
+    <script src="../res/axios.min.js"></script>
     <style>
       #view-source {
         position: fixed;
@@ -48,19 +47,19 @@
     <div id="feedback_div" class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
       <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800" style="width: auto;">
         <div class="mdl-layout__header-row" style="">
-          <div class="mdl-layout-title" style="margin-left: 0px;">苑舍意见反馈系统</div>
+          <div onclick="window.location.href='../'" class="mdl-layout-title" style="margin-left: 0px;">苑舍意见反馈系统</div>
           <div class="mdl-layout-spacer"></div>
           <div style="display: inline-block;">
-            <form action="#" style="float:left; width: 30%;">
+            <form action="./result.html" method="GET" style="float:left; width: 30%;">
               <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
-                <label class="mdl-textfield__label" for="sample2">Your code...</label>
-                <span class="mdl-textfield__error">Input is not a number!</span>
+                <input v-model="code" name="id" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                <label class="mdl-textfield__label" for="sample2">Suggestion Code...</label>
+                <span class="mdl-textfield__error">Not a number!</span>
               </div>
             </form>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" style="float:center;">
-              <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
-                <i class="material-icons" onclick="window.location.href='../result_web/result.html'">search</i>
+              <label v-on:click="search_onclick" class="mdl-button mdl-js-button mdl-button--icon" for="search">
+                <i class="material-icons">search</i>
               </label>
             </div>
           </div>
@@ -79,29 +78,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td class="mdl-data-table__cell--non-numeric">Acrylic (Transparent)</td>
+            <tr v-for="suggestion in suggestion_list">
+	      <td>{{ suggestion.id }}</td>
+	      <td class="mdl-data-table__cell--non-numeric">{{ shorter(suggestion.content) }}</td>
               <td>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="window.location.href='result.html'">
-                  查看
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td class="mdl-data-table__cell--non-numeric">Plywood (Birch)</td>
-              <td>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="window.location.href='result.html'">
-                  查看
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
-              <td>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="window.location.href='result.html'">
+                <button v-on:click="detail_onclick(suggestion)" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                   查看
                 </button>
               </td>
@@ -111,12 +92,12 @@
       </main>
 
       <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
-        <span onclick="window.location.href='../manager_web/manager.html'"><a href="#">Administrator</a></span>
-        <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;" onclick="window.location.href='results_all.html'">查询结果</button>
+        <span onclick="window.location.href='../manager_web/manager.html'">Administrator</span>
+        <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;" onclick="window.location.href='./results_all.html'">查询结果</button>
       </footer>
 
     </div>
-    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="../res/material.min.js"></script>
     <script>
       var feedback_app = new Vue({
         el: '#feedback_div',
@@ -127,21 +108,32 @@
 	  submit_title: 'Submitting...',
 	  submit_text: 'Please wait.....',
 	  id: null,
+	  code: null,
+	  suggestion_list: [],
         },
-        methods: {
-          submit_onclik: function () {
-            this.content_show = false
-            this.result_show = true
-	    axios.post('/api/add_suggestion/', {
-	      content: feedback_app.content,
+	created: function () {
+	  axios.post("/api/get_all_suggestion_list/", {})
+	    .then(function(response) {
+	      feedback_app.suggestion_list = response.data['suggestion_list']
 	    })
-	      .then(function (response) {
-		feedback_app.id = response.data['id']
-	      })
-	      .catch(function (error) {
-		console.log(error)
-	      })
-	  }
+	    .catch(function (error) {
+	      console.log(error)
+	    })
+	},
+        methods: {
+	  search_onclick: function () {
+	    window.location.href = './result.html?id='+this.code
+	  },
+	  shorter: function(data) {
+	    if (data.length <= 10) {
+	      return data
+	    } else {
+	      return data.slice(0, 10) + "..." 
+	    }
+	  },
+	  detail_onclick: function (suggestion) {
+	    window.location.href= './result.html?id='+suggestion.id
+	  },
         },
       })
     </script>

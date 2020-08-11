@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <title>回复</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-red.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="../res/icon.css">
+    <link rel="stylesheet" href="../res/material.min.css">
+    <script src="../res/vue.js"></script>
+    <script src="../res/axios.min.js"></script>
     <style>
       #view-source {
         position: fixed;
@@ -47,18 +47,18 @@
     <div id="feedback_div" class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
       <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800" style="width: auto;">
         <div class="mdl-layout__header-row" style="">
-          <div class="mdl-layout-title" style="margin-left: 0px;">苑舍意见反馈系统</div>
+          <div onclick="window.location.href='../'" class="mdl-layout-title" style="margin-left: 0px;">苑舍意见反馈系统</div>
           <div class="mdl-layout-spacer"></div>
           <div style="display: inline-block;">
-            <form action="#" style="float:left; width: 30%;">
+            <form action="../result_web/result.html" method="GET" style="float:left; width: 30%;">
               <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
-                <label class="mdl-textfield__label" for="sample2">Your code...</label>
-                <span class="mdl-textfield__error">Input is not a number!</span>
+                <input v-model="code" name='id' class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                <label class="mdl-textfield__label" for="sample2">Suggestion Code</label>
+                <span class="mdl-textfield__error">Not a number!</span>
               </div>
             </form>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" style="float:center;">
-              <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
+              <label v-on:click="search_onclick" class="mdl-button mdl-js-button mdl-button--icon" for="search">
                 <i class="material-icons" onclick="window.location.href='../result_web/result.html'">search</i>
               </label>
             </div>
@@ -72,15 +72,14 @@
 
         <main class="demo-container mdl-grid" style="height: 100%; border: 3px; width: 60%">
 
-          <div v-show="content_show" class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;">
-            <div class="mdl-card__supporting-text" style="word-break: break-all;">
-              建议:应该设置冰箱使用时间并定期清理,为什么V39六楼冰箱老是满的我都放不了东西/adffffffffffffffsssssssssssssssssss
-              谢谢!
+          <div class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;">
+            <div v-for="suggestion in suggestion_list" class="mdl-card__supporting-text" style="word-break: break-all;">
+	      {{ suggestion.content }}
             </div>
-            <div class="mdl-card__supporting-text">
+            <div v-show="content_show" class="mdl-card__supporting-text">
               <div class="mdl-textfield mdl-js-textfield">
-                <textarea class="mdl-textfield__input" type="text" rows= "3" id="content_div" ></textarea>
-                <label class="mdl-textfield__label" for="content_div">Text lines...</label>
+                <textarea v-model="content" class="mdl-textfield__input" type="text" rows= "3" id="content_div" ></textarea>
+                <label class="mdl-textfield__label" for="content_div">Enter your reply...</label>
               </div>
             </div>
             <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
@@ -107,25 +106,60 @@
 
 
       <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
-        <span onclick="window.location.href='manager.html'"><a href="#">Administrator</a></span>
+        <span onclick="window.location.href='manager.html'">Administrator</span>
         <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;" onclick="window.location.href='../result_web/results_all.html'">查询结果</button>
       </footer>
 
     </div>
-    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="../res/material.min.js"></script>
     <script>
+      var url = window.location.href // 获取当前url
+      var dz_url = url.split('#')[0] // 获取#/之前的字符串
+      var cs = dz_url.split('?')[1] // 获取?之后的参数字符串
+      var cs_arr = cs.split('&')  // 参数字符串分割为数组
+      var cs={}
+      for(var i=0;i<cs_arr.length;i++){ // 遍历数组，拿到json对象
+     	cs[cs_arr[i].split('=')[0]] = cs_arr[i].split('=')[1]
+      }
+      this.id = cs.id //这样就拿到了参数中的数据
       var feedback_app = new Vue({
         el: '#feedback_div',
         data: {
-          content_show: true,
           result_show: false,
+	  content_show: true,
+	  suggestion_list: [],
+	  content: '',
+	  code: null,
         },
         methods: {
+	  search_onclick: function () {
+	    window.location.href = 'result_web/result.html?id='+this.code
+	  },
           submit_onclik: function () {
-            this.content_show = false
-            this.result_show = true
-          }
-        }
+	    axios.post("/api/reply_suggestion/", {
+	      id: parseInt(cs['id']),
+	      content: feedback_app.content, 
+	    })
+	      .then(function (response) {
+		feedback_app.content_show = false
+		feedback_app.result_show = true
+	      })
+	      .catch(function (error) {
+		console.log(error)
+	      })
+          },
+        },
+	created: function () {
+	  axios.post('/api/get_suggestion_list_by_id/', {
+	    id: parseInt(cs['id']),
+	  })
+	    .then(function (response) {
+	      feedback_app.suggestion_list = response.data['suggestion_list']
+	    })
+	    .catch(function (error) {
+	      console.log(error)
+	    })
+	},
       })
     </script>
   </body>

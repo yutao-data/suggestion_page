@@ -118,7 +118,6 @@ func apiGetSuggestionListByIdFunc(w http.ResponseWriter, req *http.Request) {
 		}
 		suggestion_list.SuggestionList = append(suggestion_list.SuggestionList, suggestion)
 	}
-	suggestion_list.SuggestionList = append(suggestion_list.SuggestionList, request)
 	log.Println("Query suggestion list by id ", request.Id)
 	json.NewEncoder(w).Encode(&suggestion_list)
 }
