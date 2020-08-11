@@ -48,6 +48,7 @@ func initDatabase() {
 		`CREATE TABLE 'suggestion' (
 		'id' INTEGER,
 		'type' INTEGER,
+		'first' BOOL,
 		'time' INTEGER,
 		'content' TEXT
 	)`)
