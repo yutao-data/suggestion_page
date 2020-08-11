@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>回复</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-red.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+      #view-source {
+        position: fixed;
+        display: block;
+        right: 0;
+        bottom: 0;
+        margin-right: 40px;
+        margin-bottom: 40px;
+        z-index: 900;
+      }
+      .demo-ribbon {
+      width: 100%;
+      height: 10vh;
+      background-color: #3F51B5;
+      -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+      }
+      .demo-card-wide.mdl-card {
+        width: 512px;
+      }
+      .demo-card-wide > .mdl-card__title {
+        color: #fff;
+        height: 176px;
+        background: url('mucha.jpg') center / cover;
+      }
+      .demo-card-wide > .mdl-card__menu {
+        color: #fff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="feedback_div" class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
+      <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">UIC 苑舍意见反馈系统</span>
+          <div class="mdl-layout-spacer"></div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+            <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
+              <i class="material-icons">search</i>
+            </label>
+            <div class="mdl-textfield__expandable-holder">
+              <input class="mdl-textfield__input" type="text" id="search">
+              <label class="mdl-textfield__label" for="search">Enter your query...</label>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="demo-ribbon"></div>
+
+  
+
+        <main class="demo-container mdl-grid" style="height: 100%; border: 3px; width: 60%">
+
+          <div v-show="content_show" class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;">
+            <div class="mdl-card__supporting-text" style="word-break: break-all;">
+              建议:应该设置冰箱使用时间并定期清理,为什么V39六楼冰箱老是满的我都放不了东西/adffffffffffffffsssssssssssssssssss
+              谢谢!
+            </div>
+            <div class="mdl-card__supporting-text">
+              <div class="mdl-textfield mdl-js-textfield">
+                <textarea class="mdl-textfield__input" type="text" rows= "3" id="content_div" ></textarea>
+                <label class="mdl-textfield__label" for="content_div">Text lines...</label>
+              </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+              <button v-on:click="submit_onclik" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                submit
+              </button>
+            </div>
+            <div class="mdl-card__menu">
+            </div>
+          </div>
+
+          <div v-show="result_show" class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;">
+            <div class="mdl-card__title">
+              <h2 class="mdl-card__title-text">Submit Successfully</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+              <p>CONGRATULATIONS!</p>
+            </div>
+            <div class="mdl-card__menu">
+            </div>
+          </div>
+
+        </main>
+
+
+      <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
+        <span><a href="#">Help</a></span>
+        <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;">查询结果</button>
+      </footer>
+
+    </div>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script>
+      var feedback_app = new Vue({
+        el: '#feedback_div',
+        data: {
+          content_show: true,
+          result_show: false,
+        },
+        methods: {
+          submit_onclik: function () {
+            this.content_show = false
+            this.result_show = true
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
