@@ -25,12 +25,14 @@ type SuggestionList struct {
 type Suggestion struct {
 	Id int64 `json:"id,omitempty"`
 	Type int64 `json:"type,omitempty"`
+	First bool `json:"first,omitempty"`
 	Time int64 `json:"time,omitempty"`
 	Content string `json:"content,omitempty"`
 }
 
 var InsertStmt *sql.Stmt
 var QueryByIdStmt *sql.Stmt
+var QueryAllFirstStmt *sql.Stmt
 
 func InitAllStmt() {
 	var err error
@@ -38,8 +40,8 @@ func InitAllStmt() {
 		log.Fatal("DB is nil")
 	}
 	InsertStmt, err = DB.Prepare(
-		`INSERT INTO suggestion(id, type, time, content) 
-		VALUES (?, ?, ?, ?)`)
+		`INSERT INTO suggestion(id, type, first, time, content) 
+		VALUES (?, ?, ?, ?, ?)`)
 	if err != nil {
 		log.Fatal("Init Stmt failed ", err)
 	}
@@ -47,5 +49,10 @@ func InitAllStmt() {
 		`SELECT * FROM suggestion WHERE id=?`)
 	if err != nil {
 		log.Fatal("Init QueryByIdStmt failed ", err)
+	}
+	QueryAllFirstStmt, err = DB.Prepare(
+		`SELECT * FROM suggestion WHERE first=true`)
+	if err != nil {
+		log.Fatal("Init QueryAllFirstStmt failed ", err)
 	}
 }
