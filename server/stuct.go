@@ -19,12 +19,12 @@ var MessageSuccess = Message {
 }
 
 type SuggestionList struct {
-	SuggestionList []Suggestion `json:"suggestion_list"`
+	SuggestionList []Suggestion `json:"suggestion_list,omitempty"`
 }
 
 type Suggestion struct {
 	Id int64 `json:"id,omitempty"`
-	Type int64 `json:"type,omitempty"`
+	Type bool `json:"type,omitempty"`
 	First bool `json:"first,omitempty"`
 	Time int64 `json:"time,omitempty"`
 	Content string `json:"content,omitempty"`
