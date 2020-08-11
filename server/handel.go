@@ -21,6 +21,7 @@ func StartServer() {
 	mux.HandleFunc("/api/add_suggestion/", apiSuggestionAddHandleFunc)
 	mux.HandleFunc("/api/reply_suggestion/", apiReplySuggestionByIdFunc)
 	mux.HandleFunc("/api/get_suggestion_list_by_id/", apiGetSuggestionListByIdFunc)
+	mux.HandleFunc("/api/get_all_suggestion_list/", apiGetAllSuggestionListFunc)
 
 	// static file router here
 	mux.Handle("/", http.FileServer(http.Dir(rootPath)))
@@ -46,6 +47,32 @@ func shortCutHandleError(w http.ResponseWriter, req *http.Request, err error) {
 	json.NewEncoder(w).Encode(&message)
 }
 
+func apiGetAllSuggestionListFunc(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		shortCutMethodNotSupport(w, req)
+	}
+	var request Suggestion
+	json.NewDecoder(req.Body).Decode(&request)
+	// query database
+	rows, err := QueryAllFirstStmt.Query()
+	if err != nil {
+		shortCutHandleError(w, req, err)
+		return
+	}
+	var suggestionList SuggestionList
+	var suggestion Suggestion
+	for rows.Next() {
+		err = rows.Scan(&suggestion.Id, &suggestion.Type, &suggestion.First, &suggestion.Time, &suggestion.Content)
+		if err != nil {
+			shortCutHandleError(w, req, err)
+			return
+		}
+		suggestionList.SuggestionList = append(suggestionList.SuggestionList, suggestion)
+	}
+	log.Println("query all first suggestion")
+	json.NewEncoder(w).Encode(&suggestionList)
+}
+
 func apiReplySuggestionByIdFunc(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		shortCutMethodNotSupport(w, req)
@@ -56,7 +83,8 @@ func apiReplySuggestionByIdFunc(w http.ResponseWriter, req *http.Request) {
 	// insert into database
 	_, err = InsertStmt.Exec(
 		request.Id,
-		2,
+		2, // type
+		false, // frist
 		time.Now().Unix(),
 		request.Content)
 	if err != nil {
@@ -83,7 +111,8 @@ func apiGetSuggestionListByIdFunc(w http.ResponseWriter, req *http.Request) {
 	var suggestion_list SuggestionList
 	for rows.Next() {
 		var suggestion Suggestion
-		err = rows.Scan(&suggestion.Id, &suggestion.Type, &suggestion.Time, &suggestion.Content)
+		// todo rows.Scan(&suggestion)
+		err = rows.Scan(&suggestion.Id, &suggestion.Type, &suggestion.First, &suggestion.Time, &suggestion.Content)
 		if err != nil {
 			shortCutHandleError(w, req, err)
 			return
@@ -108,15 +137,17 @@ func apiSuggestionAddHandleFunc(w http.ResponseWriter, req *http.Request) {
 		log.Println("Error at decode json ", err)
 		return
 	}
-	// generate suggestion information
+	// generate suggestion information in object
+	// because it needs to be return
 	suggestion.Id = genRandomId()
 	suggestion.Type = 1
+	suggestion.First = true
 	suggestion.Time = time.Now().Unix()
-
 	// insert database
 	_, err = InsertStmt.Exec(
 		suggestion.Id,
 		suggestion.Type,
+		suggestion.First,
 		suggestion.Time,
 		suggestion.Content)
 	if err != nil {
