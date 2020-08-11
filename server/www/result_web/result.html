@@ -66,17 +66,22 @@
 
   <body>
     <div id="feedback_div" class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
-      <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800">
-        <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">UIC 苑舍意见反馈系统</span>
+      <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800" style="width: auto;">
+        <div class="mdl-layout__header-row" style="">
+          <div class="mdl-layout-title" style="margin-left: 0px;">苑舍意见反馈系统</div>
           <div class="mdl-layout-spacer"></div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-            <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
-              <i class="material-icons">search</i>
-            </label>
-            <div class="mdl-textfield__expandable-holder">
-              <input class="mdl-textfield__input" type="text" id="search">
-              <label class="mdl-textfield__label" for="search">Enter your query...</label>
+          <div style="display: inline-block;">
+            <form action="#" style="float:left; width: 30%;">
+              <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                <label class="mdl-textfield__label" for="sample2">Your code...</label>
+                <span class="mdl-textfield__error">Input is not a number!</span>
+              </div>
+            </form>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" style="float:center;">
+              <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
+                <i class="material-icons" onclick="window.location.href='result_web/result.html'">search</i>
+              </label>
             </div>
           </div>
         </div>
@@ -134,8 +139,8 @@
       </main>
 
       <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
-        <span><a href="#">Help</a></span>
-        <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;">查询结果</button>
+        <span onclick="window.location.href='manager_web/manager.html'"><a href="#">Administrator</a></span>
+        <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;" onclick="window.location.href='result_web/results_all.html'">查询结果</button>
       </footer>
 
     </div>
