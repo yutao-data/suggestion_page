@@ -47,7 +47,7 @@ func initDatabase() {
 	initStmt, err := DB.Prepare(
 		`CREATE TABLE 'suggestion' (
 		'id' INTEGER,
-		'type' INTEGER,
+		'type' BOOL,
 		'first' BOOL,
 		'time' INTEGER,
 		'content' TEXT

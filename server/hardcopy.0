@@ -1,0 +1,77 @@
+" Press ? for help             |  package main                                                                                                         |  func shortCutMethodNotSupport(w http.ResponseWriter, req *http.Request) {
+                               |                                                                                                                       |          w.WriteHeader(403)
+.. (up a dir)                  |  import (                                                                                                             |          json.NewEncoder(w).Encode(&MessageMethodNotSupport)
+/home/hmsy/suggestion_page/    |          "database/sql"                                                                                               |  }
+¾ server/                      |          "log"                                                                                                        |  func shortCutHandleError(w http.ResponseWriter, req *http.Request, err error) {
+  ¾ www/                       |  )                                                                                                                    |          log.Println("Error: ", err.Error())
+    ¸ manager_web/             |                                                                                                                       |          w.WriteHeader(500)
+    ¸ res/                     |  type Message struct {                                                                                                |          message := Message {
+    ¾ result_web/              |          Title string `json:"title"`                                                                                  |                  Title: "Error",
+        dog.png                |          Content string `json:"Content"`                                                                              |                  Content: err.Error(),
+        fish.png               |  }                                                                                                                    |          }
+        result.html            |  var MessageMethodNotSupport = Message {                                                                              |          json.NewEncoder(w).Encode(&message)
+        rika.png               |          Title: "Method not suppoert",                                                                                |  }
+        styles.css             |          Content: "Your HTTP method is not support by the server",                                                    |
+      index.html               |  }                                                                                                                    |  func apiGetAllSuggestionListFunc(w http.ResponseWriter, req *http.Request) {
+    db.sqlite3                 |  var MessageSuccess = Message {                                                                                       |          if req.Method != "POST" {
+    go.mod                     |          Title: "Success",                                                                                            |                  shortCutMethodNotSupport(w, req)
+    go.sum                     |          Content: "Action success",                                                                                   |+                 return
+    handel.go                  |  }                                                                                                                    |_         }
+    README.md                  |                                                                                                                       |          // query database
+    server.go                  |  type SuggestionList struct {                                                                                         |          rows, err := QueryAllFirstStmt.Query()
+    stuct.go                   |~         SuggestionList []Suggestion `json:"suggestion_list,omitempty"`                                               |          if err != nil {
+  LICENSE                      |  }                                                                                                                    |                  shortCutHandleError(w, req, err)
+~                              |                                                                                                                       |                  return
+~                              |  type Suggestion struct {                                                                                             |          }
+~                              |          Id int64 `json:"id,omitempty"`                                                                               |          var suggestionList SuggestionList
+~                              |~         Type bool `json:"type,omitempty"`                                                                            |          var suggestion Suggestion
+~                              |          First bool `json:"first,omitempty"`                                                                          |          for rows.Next() {
+~                              |          Time int64 `json:"time,omitempty"`                                                                           |                  err = rows.Scan(&suggestion.Id, &suggestion.Type, &suggestion.First, &suggestion.Time, &suggestion.Co
+~                              |          Content string `json:"content,omitempty"`                                                                    |  ntent)
+~                              |  }                                                                                                                    |                  if err != nil {
+~                              |                                                                                                                       |                          shortCutHandleError(w, req, err)
+~                              |  var InsertStmt *sql.Stmt                                                                                             |                          return
+~                              |  var QueryByIdStmt *sql.Stmt                                                                                          |                  }
+~                              |  var QueryAllFirstStmt *sql.Stmt                                                                                      |                  suggestionList.SuggestionList = append(suggestionList.SuggestionList, suggestion)
+~                              |                                                                                                                       |          }
+~                              |  func InitAllStmt() {                                                                                                 |          log.Println("query all first suggestion")
+~                              |          var err error                                                                                                |          json.NewEncoder(w).Encode(&suggestionList)
+~                              |          if DB == nil {                                                                                               |  }
+~                              |                  log.Fatal("DB is nil")                                                                               |
+~                              |          }                                                                                                            |  func apiReplySuggestionByIdFunc(w http.ResponseWriter, req *http.Request) {
+~                              |          InsertStmt, err = DB.Prepare(                                                                                |          if req.Method != "POST" {
+~                              |                  `INSERT INTO suggestion(id, type, first, time, content)                                              |                  shortCutMethodNotSupport(w, req)
+~                              |                  VALUES (?, ?, ?, ?, ?)`)                                                                             |          }
+~                              |          if err != nil {                                                                                              |          var request Suggestion
+~                              |                  log.Fatal("Init Stmt failed ", err)                                                                  |          var err error
+~                              |          }                                                                                                            |          json.NewDecoder(req.Body).Decode(&request)
+~                              |          QueryByIdStmt, err = DB.Prepare(                                                                             |          // insert into database
+~                              |                  `SELECT * FROM suggestion WHERE id=?`)                                                               |          _, err = InsertStmt.Exec(
+~                              |          if err != nil {                                                                                              |                  request.Id,
+~                              |                  log.Fatal("Init QueryByIdStmt failed ", err)                                                         |~                 false, // type
+~                              |          }                                                                                                            |                  false, // frist
+~                              |          QueryAllFirstStmt, err = DB.Prepare(                                                                         |                  time.Now().Unix(),
+~                              |                  `SELECT * FROM suggestion WHERE first=true`)                                                         |                  request.Content)
+~                              |          if err != nil {                                                                                              |          if err != nil {
+~                              |                  log.Fatal("Init QueryAllFirstStmt failed ", err)                                                     |                  shortCutHandleError(w, req, err)
+~                              |          }                                                                                                            |                  return
+~                              |  }                                                                                                                    |          }
+~                              |~                                                                                                                      |          log.Println("Reply a suggestion: ", request.Content)
+~                              |~                                                                                                                      |          json.NewEncoder(w).Encode(MessageSuccess)
+~                              |~                                                                                                                      |  }
+~                              |~                                                                                                                      |
+~                              |~                                                                                                                      |  func apiGetSuggestionListByIdFunc(w http.ResponseWriter, req *http.Request) {
+~                              |~                                                                                                                      |          if req.Method != "POST" {
+~                              |~                                                                                                                      |                  shortCutMethodNotSupport(w, req)
+~                              |~                                                                                                                      |          }
+~                              |~                                                                                                                      |          var request Suggestion
+~                              |~                                                                                                                      |          json.NewDecoder(req.Body).Decode(&request)
+~                              |~                                                                                                                      |          // query database
+~                              |~                                                                                                                      |          rows, err := QueryByIdStmt.Query(request.Id)
+~                              |~                                                                                                                      |          if err != nil {
+~                              |~                                                                                                                      |                  shortCutHandleError(w, req, err)
+~                              |~                                                                                                                      |                  return
+~                              |~                                                                                                                      |          }
+~                              |~                                                                                                                      |          // new suggestion list
+ /home/hmsy/suggestion_page      server/stuct.go                                                               go  utf-8[unix]   84% 0   49/58 Ñÿ : 54   NORMAL  +2 ~2 -2   server/handel.go                                          go  utf-8[unix]   56% 0   98/172 Ñÿ : 33
+

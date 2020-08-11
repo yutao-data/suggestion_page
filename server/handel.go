@@ -50,9 +50,8 @@ func shortCutHandleError(w http.ResponseWriter, req *http.Request, err error) {
 func apiGetAllSuggestionListFunc(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		shortCutMethodNotSupport(w, req)
+		return
 	}
-	var request Suggestion
-	json.NewDecoder(req.Body).Decode(&request)
 	// query database
 	rows, err := QueryAllFirstStmt.Query()
 	if err != nil {
@@ -83,7 +82,7 @@ func apiReplySuggestionByIdFunc(w http.ResponseWriter, req *http.Request) {
 	// insert into database
 	_, err = InsertStmt.Exec(
 		request.Id,
-		2, // type
+		false, // type
 		false, // frist
 		time.Now().Unix(),
 		request.Content)
@@ -119,6 +118,8 @@ func apiGetSuggestionListByIdFunc(w http.ResponseWriter, req *http.Request) {
 		}
 		suggestion_list.SuggestionList = append(suggestion_list.SuggestionList, suggestion)
 	}
+	suggestion_list.SuggestionList = append(suggestion_list.SuggestionList, request)
+	log.Println("Query suggestion list by id ", request.Id)
 	json.NewEncoder(w).Encode(&suggestion_list)
 }
 
@@ -140,7 +141,7 @@ func apiSuggestionAddHandleFunc(w http.ResponseWriter, req *http.Request) {
 	// generate suggestion information in object
 	// because it needs to be return
 	suggestion.Id = genRandomId()
-	suggestion.Type = 1
+	suggestion.Type = true
 	suggestion.First = true
 	suggestion.Time = time.Now().Unix()
 	// insert database
@@ -162,7 +163,7 @@ func genRandomId() int64 {
 	var suggestion Suggestion
 	var id int64
 	for {
-		id = rand.Int63()
+		id = rand.Int63() % 10000
 		err := QueryByIdStmt.QueryRow(id).Scan(&suggestion)
 		if err == sql.ErrNoRows {
 			break

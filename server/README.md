@@ -11,14 +11,14 @@
     ```json
     {
 	"id": 13246234123,
-	"type": 1,
+	"type": true,
 	"time": 11451441429366666,
 	"content": "Some Suggestion content here",
     }
     ```
     - Comment
     `id` is randomly generate by server, it is a very long integer  
-    `type` 1 means suggestion, 2 means reply  
+    `type` true means suggestion, false means reply  
     `time` is an integer, which is UTC unix time
 - Reply an suggestion
     - Method: `POST`
@@ -50,13 +50,13 @@
 	"suggestion_list": [
 	    {
 		"id": 39,
-		"type": 1,
+		"type": false,
 		"time": 100,
 		"content": "give me more money!",
 	    },
 	    {
 		"id": 39,
-		"type": 2,
+		"type": false,
 		"time": 200,
 		"content": "go f*uc@!#! yourself!",
 	    },
