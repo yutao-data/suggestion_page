@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -23,8 +22,8 @@ func StartServer() {
 	mux.HandleFunc("/api/reply_suggestion/", apiReplySuggestionByIdFunc)
 	mux.HandleFunc("/api/get_suggestion_list_by_id/", apiGetSuggestionListByIdFunc)
 
-	// router here
-	mux.HandleFunc("/", indexHandelFunc)
+	// static file router here
+	mux.Handle("/", http.FileServer(http.Dir(rootPath)))
 
 	var s = &http.Server {
 		Addr: ":8039",
@@ -139,14 +138,4 @@ func genRandomId() int64 {
 		}
 	}
 	return id
-}
-
-func indexHandelFunc(w http.ResponseWriter, req *http.Request) {
-	// because / match everything
-	// so we need to check url here
-	if req.URL.Path != "/" {
-		http.NotFound(w, req)
-		return
-	}
-	fmt.Fprintf(w, "Welcome to home page")
 }
