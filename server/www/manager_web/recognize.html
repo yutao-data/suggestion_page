@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>验证界面</title>
+
+    <link rel="stylesheet" href="../res/icon.css">
+    <link rel="stylesheet" href="../res/material.min.css">
+    <script src="../res/vue.js"></script>
+    <script src="../res/axios.min.js"></script>
+    <style>
+      #view-source {
+        position: fixed;
+        display: block;
+        right: 0;
+        bottom: 0;
+        margin-right: 40px;
+        margin-bottom: 40px;
+        z-index: 900;
+      }
+      .demo-ribbon {
+      width: 100%;
+      height: 10vh;
+      background-color: #3F51B5;
+      -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+      }
+      .demo-card-wide.mdl-card {
+        width: 512px;
+      }
+      .demo-card-wide > .mdl-card__title {
+        color: #fff;
+        height: 176px;
+        background: url('../res/small_background.gif') center / cover;
+      }
+      .demo-card-wide > .mdl-card__menu {
+        color: #fff;
+      }
+      .wrap {
+        table-layout: fixed;
+        word-wrap: break-all;
+        word-break: normal;
+        overflow: hidden;
+      }
+      .demo-card-square.mdl-card {
+        width: 320px;
+        height: max-content;
+      }
+      .demo-card-square > .mdl-card__title {
+        color: #fff;
+        background:
+          url('./rika.png') bottom right 15% no-repeat #46B6AC;
+      }
+
+      .demo-card-square-reply > .mdl-card__title {
+        color: #fff;
+        background:
+          url('./fish.png') bottom right 15% no-repeat #46B6AC;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="feedback_div" class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
+      <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800" style="width: auto;">
+        <div class="mdl-layout__header-row" style="">
+          <div onclick="window.location.href='../'"class="mdl-layout-title" style="margin-left: 0px;">苑舍意见反馈系统</div>
+          <div class="mdl-layout-spacer"></div>
+          <div style="display: inline-block;">
+            <form action="../result_web/result.html" method="GET" style="float:left; width: 30%;">
+              <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" name="id" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+                <label class="mdl-textfield__label" for="sample2">Suggestion code...</label>
+                <span class="mdl-textfield__error">Not a number!</span>
+              </div>
+            </form>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" style="float:center;">
+              <label v-on:click="search_onclick" class="mdl-button mdl-js-button mdl-button--icon" for="search">
+                <i class="material-icons">search</i>
+              </label>
+            </div>
+          </div>
+        </div>
+      </header>
+
+
+
+      <div class="demo-ribbon"></div>
+
+
+
+ 
+      <main style="height: 100%; vertical-align: middle;">
+        <div class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;">
+          <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">请输入管理员密码</h2>
+          </div>
+          <div class="mdl-card__supporting-text">
+            <div class="mdl-textfield mdl-js-textfield">
+              <textarea v-model="content" class="mdl-textfield__input" type="text" rows= "3" id="content_div" ></textarea>
+              <label class="mdl-textfield__label" for="content_div">Text lines...</label>
+            </div>
+          </div>
+          <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+            <button v-on:click="submit_onclik" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+              验证
+            </button>
+          </div>
+          <div class="mdl-card__menu">
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+              <i class="material-icons">share</i>
+            </button>
+          </div>
+        </div>
+      </main>
+
+
+
+      <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
+        <span onclick="window.location.href='manager.html'">Administrator</span>
+        <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;" onclick="window.location.href='../result_web/results_all.html'">查询结果</button>
+      </footer>
+
+    </div>
+
+    <script src="../res/material.min.js"></script>
+    <script>
+      var feedback_app = new Vue({
+	el: "#feedback_div",
+	data: {
+	  suggestion_list: [],
+	},
+	created: function () {
+	  axios.post("/api/get_all_suggestion_list/", {})
+	    .then(function (response) {
+	      feedback_app.suggestion_list = response.data['suggestion_list']
+	    })
+	    .catch(function (error) {
+	      console.log(error)
+	    })
+	},
+        methods: {
+	  search_onclick: function () {
+	    window.location.href = './result.html?id='+this.code
+	  },
+	  reply_onclick: function (suggestion) {
+	    window.location.href = './reply.html?id='+suggestion.id
+	  },
+	},
+      })
+    </script>
+  </body>
+</html>
+
