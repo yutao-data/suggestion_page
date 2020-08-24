@@ -121,7 +121,7 @@
 
 
       <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
-        <span onclick="window.location.href='manager.html'">Administrator</span>
+        <span onclick="window.location.href='recognize.html'">Administrator</span>
         <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;" onclick="window.location.href='../result_web/results_all.html'">查询结果</button>
       </footer>
 
@@ -129,29 +129,7 @@
 
     <script src="../res/material.min.js"></script>
     <script>
-      var feedback_app = new Vue({
-	el: "#feedback_div",
-	data: {
-	  suggestion_list: [],
-	},
-	created: function () {
-	  axios.post("/api/get_all_suggestion_list/", {})
-	    .then(function (response) {
-	      feedback_app.suggestion_list = response.data['suggestion_list']
-	    })
-	    .catch(function (error) {
-	      console.log(error)
-	    })
-	},
-        methods: {
-	  search_onclick: function () {
-	    window.location.href = './result.html?id='+this.code
-	  },
-	  reply_onclick: function (suggestion) {
-	    window.location.href = './reply.html?id='+suggestion.id
-	  },
-	},
-      })
+      
     </script>
   </body>
 </html>
