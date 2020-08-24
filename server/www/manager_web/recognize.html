@@ -101,12 +101,12 @@
           </div>
           <div class="mdl-card__supporting-text">
             <div class="mdl-textfield mdl-js-textfield">
-              <textarea v-model="content" class="mdl-textfield__input" type="text" rows= "3" id="content_div" ></textarea>
+              <textarea v-model="passwd" class="mdl-textfield__input" type="text" rows= "3"></textarea>
               <label class="mdl-textfield__label" for="content_div">Text lines...</label>
             </div>
           </div>
           <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
-            <button v-on:click="submit_onclik" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+            <button v-on:click= "confirm_onclick" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
               验证
             </button>
           </div>
@@ -129,7 +129,30 @@
 
     <script src="../res/material.min.js"></script>
     <script>
-      
+      var feedback_div = new Vue({
+        el:'#feedback_div',
+        data: {
+          id: null,
+          code: null,
+          passwd: '',
+        },
+        methods:{
+          search_onclick: function () {
+            window.location.href = 'result_web/result.html?id='+this.code
+          },
+          confirm_onclick: function() {
+            axios.post('/api/confirm_passwd/',{
+              passwd: feedback_div.passwd,
+            })
+            .then(function (response) {
+              window.location.href= 'manager.html/'
+            })
+            .catch(function (error) {
+              console.log(error)
+	          })
+          }
+        }
+      })
     </script>
   </body>
 </html>
