@@ -121,27 +121,27 @@
         data: {
           content_show: true,
           result_show: false,
-	  content: '',
-	  id: null,
-	  code: null,
+          content: '',
+          id: null,
+          code: null,
         },
         methods: {
           submit_onclik: function () {
             this.content_show = false
             this.result_show = true
-	    axios.post('/api/add_suggestion/', {
-	      content: feedback_app.content,
-	    })
-	      .then(function (response) {
-		feedback_app.id = response.data['id']
-	      })
-	      .catch(function (error) {
-		console.log(error)
-	      })
-	  },
-	  search_onclick: function () {
-	    window.location.href = 'result_web/result.html?id='+this.code
-	  },
+          axios.post('/api/add_suggestion/', {
+            content: feedback_app.content,
+          })
+          .then(function (response) {
+            feedback_app.id = response.data['id']
+           })
+          .catch(function (error) {
+            console.log(error)
+           })
+          },
+          search_onclick: function () {
+            window.location.href = 'result_web/result.html?id='+this.code
+          },
         },
       })
     </script>
