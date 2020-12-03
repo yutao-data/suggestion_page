@@ -109,7 +109,7 @@
       </main>
 
       <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
-        <span onclick="window.location.href='manager_web/manager.html'">Administrator</span>
+        <span onclick="window.location.href='manager_web/recognize.html'">Administrator</span>
         <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;" onclick="window.location.href='result_web/results_all.html'">查询结果</button>
       </footer>
 
@@ -121,27 +121,27 @@
         data: {
           content_show: true,
           result_show: false,
-	  content: '',
-	  id: null,
-	  code: null,
+          content: '',
+          id: null,
+          code: null,
         },
         methods: {
           submit_onclik: function () {
             this.content_show = false
             this.result_show = true
-	    axios.post('/api/add_suggestion/', {
-	      content: feedback_app.content,
-	    })
-	      .then(function (response) {
-		feedback_app.id = response.data['id']
-	      })
-	      .catch(function (error) {
-		console.log(error)
-	      })
-	  },
-	  search_onclick: function () {
-	    window.location.href = 'result_web/result.html?id='+this.code
-	  },
+          axios.post('/api/add_suggestion/', {
+            content: feedback_app.content,
+          })
+          .then(function (response) {
+            feedback_app.id = response.data['id']
+           })
+          .catch(function (error) {
+            console.log(error)
+           })
+          },
+          search_onclick: function () {
+            window.location.href = 'result_web/result.html?id='+this.code
+          },
         },
       })
     </script>

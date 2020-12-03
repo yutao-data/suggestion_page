@@ -1,11 +1,11 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-    <title>管理员界面</title>
+    <title>验证界面</title>
 
     <link rel="stylesheet" href="../res/icon.css">
     <link rel="stylesheet" href="../res/material.min.css">
@@ -35,7 +35,7 @@
       .demo-card-wide > .mdl-card__title {
         color: #fff;
         height: 176px;
-        background: url('res/small_background.gif') center / cover;
+        background: url('../res/small_background.gif') center / cover;
       }
       .demo-card-wide > .mdl-card__menu {
         color: #fff;
@@ -91,30 +91,34 @@
 
       <div class="demo-ribbon"></div>
 
+
+
  
       <main style="height: 100%; vertical-align: middle;">
-        <div style="margin-top: 30%;">
-        <table class="mdl-data-table mdl-data-table--selectable mdl-shadow--2dp" style="width: max-content; margin: auto;">
-          <thead>
-            <tr>
-              <th class="mdl-data-table__cell--non-numeric">问题概述</th>
-              <th>流水号</th>
-              <th class="mdl-data-table__cell--non-numeric">选项</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="suggestion in suggestion_list">
-	      <td class="mdl-data-table__cell--non-numeric">{{ suggestion.content }}</td>
-	      <td>{{ suggestion.id }}</td>
-              <td>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"  v-on:click="reply_onclick(suggestion)">
-                回复
-                </button>
-            </td>
-          </tbody>
-        </table>
-      </div>
+        <div class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;">
+          <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">请输入管理员密码</h2>
+          </div>
+          <div class="mdl-card__supporting-text">
+            <div class="mdl-textfield mdl-js-textfield">
+              <textarea v-model="passwd" class="mdl-textfield__input" type="text" rows= "3"></textarea>
+              <label class="mdl-textfield__label" for="content_div">Text lines...</label>
+            </div>
+          </div>
+          <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+            <button v-on:click= "confirm_onclick" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+              验证
+            </button>
+          </div>
+          <div class="mdl-card__menu">
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+              <i class="material-icons">share</i>
+            </button>
+          </div>
+        </div>
       </main>
+
+
 
       <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
         <span onclick="window.location.href='recognize.html'">Administrator</span>
@@ -125,28 +129,29 @@
 
     <script src="../res/material.min.js"></script>
     <script>
-      var feedback_app = new Vue({
-	el: "#feedback_div",
-	data: {
-	  suggestion_list: [],
-	},
-	created: function () {
-	  axios.post("/api/get_all_suggestion_list/", {})
-	    .then(function (response) {
-	      feedback_app.suggestion_list = response.data['suggestion_list']
-	    })
-	    .catch(function (error) {
-	      console.log(error)
-	    })
-	},
-        methods: {
-	  search_onclick: function () {
-	    window.location.href = './result.html?id='+this.code
-	  },
-	  reply_onclick: function (suggestion) {
-	    window.location.href = './reply.html?id='+suggestion.id
-	  },
-	},
+      var feedback_div = new Vue({
+        el:'#feedback_div',
+        data: {
+          id: null,
+          code: null,
+          passwd: '',
+        },
+        methods:{
+          search_onclick: function () {
+            window.location.href = 'result_web/result.html?id='+this.code
+          },
+          confirm_onclick: function() {
+            axios.post('/api/confirm_passwd/',{
+              passwd: feedback_div.passwd,
+            })
+            .then(function (response) {
+              window.location.href= 'manager.html/'
+            })
+            .catch(function (error) {
+              console.log(error)
+	          })
+          }
+        }
       })
     </script>
   </body>
