@@ -22,6 +22,7 @@ func StartServer() {
 	mux.HandleFunc("/api/reply_suggestion/", apiReplySuggestionByIdFunc)
 	mux.HandleFunc("/api/get_suggestion_list_by_id/", apiGetSuggestionListByIdFunc)
 	mux.HandleFunc("/api/get_all_suggestion_list/", apiGetAllSuggestionListFunc)
+	mux.HandleFunc("/api/confirm_passwd/", apiConfirmPasswd)
 
 	// static file router here
 	mux.Handle("/", http.FileServer(http.Dir(rootPath)))
@@ -45,6 +46,27 @@ func shortCutHandleError(w http.ResponseWriter, req *http.Request, err error) {
 		Content: err.Error(),
 	}
 	json.NewEncoder(w).Encode(&message)
+}
+
+func apiConfirmPasswd(w http.ResponseWriter, req *http.Request) {
+	if req.Method != "POST" {
+		shortCutMethodNotSupport(w, req)
+		return
+	}
+	var passwdRecived Passwd
+	json.NewDecoder(req.Body).Decode(&passwdRecived)
+	var message Message
+	if !(passwd == passwdRecived.Passwd) {
+		// wrong password
+		w.WriteHeader(403)
+		message = Message {
+			Title: "Forbidden",
+			Content: "Wrong password",
+		}
+		json.NewEncoder(w).Encode(&message)
+		return
+	}
+	json.NewEncoder(w).Encode(&MessageSuccess)
 }
 
 func apiGetAllSuggestionListFunc(w http.ResponseWriter, req *http.Request) {

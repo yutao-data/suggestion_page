@@ -18,6 +18,9 @@ var MessageSuccess = Message {
 	Content: "Action success",
 }
 
+type Passwd struct {
+	Passwd string `json:"passwd"`
+}
 type SuggestionList struct {
 	SuggestionList []Suggestion `json:"suggestion_list,omitempty"`
 }

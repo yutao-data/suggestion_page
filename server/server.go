@@ -11,6 +11,7 @@ import (
 var databasePath string
 var rebuildDatabase bool
 var rootPath string
+var passwd string
 
 // DB as global var
 var DB *sql.DB
@@ -19,10 +20,12 @@ func init() {
 	flag.StringVar(&databasePath, "database", "db.sqlite3", "Database file path")
 	flag.BoolVar(&rebuildDatabase, "rebuild", false, "Rebuild database")
 	flag.StringVar(&rootPath, "root", "./www", "Html file directory")
+	flag.StringVar(&passwd, "passwd", "averystrongpassword", "password for manager page")
 }
 
 func main() {
 	var err error
+	flag.Parse()
 	log.Println("Server start")
 	DB, err = sql.Open("sqlite3", databasePath)
 	if err != nil {
