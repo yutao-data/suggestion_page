@@ -145,7 +145,7 @@
               passwd: feedback_div.passwd,
             })
             .then(function (response) {
-              window.location.href= 'manager.html/'
+              window.location.href= 'manager.html?passwd=' + feedback_div.passwd
             })
             .catch(function (error) {
               console.log(error)
