@@ -31,6 +31,7 @@ type Suggestion struct {
 	First bool `json:"first,omitempty"`
 	Time int64 `json:"time,omitempty"`
 	Content string `json:"content,omitempty"`
+	Passwd string `json:"passwd"`
 }
 
 var InsertStmt *sql.Stmt

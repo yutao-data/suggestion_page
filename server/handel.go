@@ -47,6 +47,15 @@ func shortCutHandleError(w http.ResponseWriter, req *http.Request, err error) {
 	}
 	json.NewEncoder(w).Encode(&message)
 }
+func shortCutWrongPassword(w http.ResponseWriter, req *http.Request, passwd string) {
+	log.Println("Wrong password", passwd)
+	w.WriteHeader(403)
+	message := Message {
+		Title: "Not allow",
+		Content: "Password Wrong",
+	}
+	json.NewEncoder(w).Encode(&message)
+}
 
 func apiConfirmPasswd(w http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
@@ -55,15 +64,9 @@ func apiConfirmPasswd(w http.ResponseWriter, req *http.Request) {
 	}
 	var passwdRecived Passwd
 	json.NewDecoder(req.Body).Decode(&passwdRecived)
-	var message Message
 	if !(passwd == passwdRecived.Passwd) {
 		// wrong password
-		w.WriteHeader(403)
-		message = Message {
-			Title: "Forbidden",
-			Content: "Wrong password",
-		}
-		json.NewEncoder(w).Encode(&message)
+		shortCutWrongPassword(w, req, passwdRecived.Passwd)
 		return
 	}
 	json.NewEncoder(w).Encode(&MessageSuccess)
@@ -101,6 +104,11 @@ func apiReplySuggestionByIdFunc(w http.ResponseWriter, req *http.Request) {
 	var request Suggestion
 	var err error
 	json.NewDecoder(req.Body).Decode(&request)
+	// confirm password before reply
+	if passwd != request.Passwd {
+		shortCutWrongPassword(w, req, request.Passwd)
+		return
+	}
 	// insert into database
 	_, err = InsertStmt.Exec(
 		request.Id,

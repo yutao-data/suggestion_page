@@ -142,6 +142,8 @@
 				suggestion_list: [],
 				content: '',
 				code: null,
+				passwd: getQueryVariable('passwd'),
+				id: parseInt(getQueryVariable('id')),
 			},
 			methods: {
 				search_onclick: function () {
@@ -149,8 +151,9 @@
 				},
 				submit_onclik: function () {
 					axios.post("/api/reply_suggestion/", {
-						id: parseInt(getQueryVariable('id')),
+						id: feedback_app.id,
 						content: feedback_app.content,
+						passwd: feedback_app.passwd,
 					})
 						.then(function (response) {
 							feedback_app.content_show = false

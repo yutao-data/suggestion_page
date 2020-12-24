@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="../res/material.min.css">
 	<script src="../res/vue.js"></script>
 	<script src="../res/axios.min.js"></script>
+	<script src="../res/common.js"></script>
 	<style>
 		#view-source {
 			position: fixed;
@@ -142,6 +143,7 @@
 			el: "#feedback_div",
 			data: {
 				suggestion_list: [],
+				passwd: getQueryVariable("passwd"),
 			},
 			created: function () {
 				axios.post("/api/get_all_suggestion_list/", {})
@@ -157,7 +159,7 @@
 					window.location.href = './result.html?id=' + this.code
 				},
 				reply_onclick: function (suggestion) {
-					window.location.href = './reply.html?id=' + suggestion.id
+					window.location.href = './reply.html?id=' + suggestion.id + '&passwd=' + feedback_app.passwd
 				},
 			},
 		})
