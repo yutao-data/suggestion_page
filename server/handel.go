@@ -86,7 +86,7 @@ func apiGetAllSuggestionListFunc(w http.ResponseWriter, req *http.Request) {
 	var suggestionList SuggestionList
 	var suggestion Suggestion
 	for rows.Next() {
-		err = rows.Scan(&suggestion.Id, &suggestion.Type, &suggestion.First, &suggestion.Time, &suggestion.Content)
+		err = rows.Scan(&suggestion.Id, &suggestion.Type, &suggestion.First, &suggestion.Time, &suggestion.Content, &suggestion.Show)
 		if err != nil {
 			shortCutHandleError(w, req, err)
 			return
@@ -115,7 +115,13 @@ func apiReplySuggestionByIdFunc(w http.ResponseWriter, req *http.Request) {
 		false, // type
 		false, // frist
 		time.Now().Unix(),
-		request.Content)
+		request.Content,
+		request.Show)
+	if err != nil {
+		shortCutHandleError(w, req, err)
+		return
+	}
+	_, err = SetSuggestionShowStmt.Exec(request.Id)
 	if err != nil {
 		shortCutHandleError(w, req, err)
 		return
@@ -141,7 +147,7 @@ func apiGetSuggestionListByIdFunc(w http.ResponseWriter, req *http.Request) {
 	for rows.Next() {
 		var suggestion Suggestion
 		// todo rows.Scan(&suggestion)
-		err = rows.Scan(&suggestion.Id, &suggestion.Type, &suggestion.First, &suggestion.Time, &suggestion.Content)
+		err = rows.Scan(&suggestion.Id, &suggestion.Type, &suggestion.First, &suggestion.Time, &suggestion.Content, &suggestion.Show)
 		if err != nil {
 			shortCutHandleError(w, req, err)
 			return
@@ -179,7 +185,8 @@ func apiSuggestionAddHandleFunc(w http.ResponseWriter, req *http.Request) {
 		suggestion.Type,
 		suggestion.First,
 		suggestion.Time,
-		suggestion.Content)
+		suggestion.Content,
+		true)
 	if err != nil {
 		shortCutHandleError(w, req, err)
 		return

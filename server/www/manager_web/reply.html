@@ -101,12 +101,8 @@
 				<div class="mdl-card__menu">
 				</div>
 				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
-					<input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
+					<input v-model="show" type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
 					<span class="mdl-checkbox__label">公开展示</span>
-				</label>
-				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
-					<input type="checkbox" id="checkbox-2" class="mdl-checkbox__input" checked>
-					<span class="mdl-checkbox__label">结束对话</span>
 				</label>
 			</div>
 
@@ -144,6 +140,7 @@
 				code: null,
 				passwd: getQueryVariable('passwd'),
 				id: parseInt(getQueryVariable('id')),
+				show: true,
 			},
 			methods: {
 				search_onclick: function () {
@@ -154,6 +151,7 @@
 						id: feedback_app.id,
 						content: feedback_app.content,
 						passwd: feedback_app.passwd,
+						show: feedback_app.show,
 					})
 						.then(function (response) {
 							feedback_app.content_show = false

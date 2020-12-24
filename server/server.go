@@ -53,7 +53,8 @@ func initDatabase() {
 		'type' BOOL,
 		'first' BOOL,
 		'time' INTEGER,
-		'content' TEXT
+		'content' TEXT,
+		'show' BOOL
 	)`)
 	if err != nil {
 		log.Fatal("Error at create suggestion table: ", err)
