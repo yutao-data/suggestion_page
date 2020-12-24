@@ -1,176 +1,189 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-    <title>回复</title>
 
-    <link rel="stylesheet" href="../res/icon.css">
-    <link rel="stylesheet" href="../res/material.min.css">
-    <script src="../res/vue.js"></script>
-    <script src="../res/axios.min.js"></script>
-    <style>
-      #view-source {
-        position: fixed;
-        display: block;
-        right: 0;
-        bottom: 0;
-        margin-right: 40px;
-        margin-bottom: 40px;
-        z-index: 900;
-      }
-      .demo-ribbon {
-      width: 100%;
-      height: 10vh;
-      background-color: #3F51B5;
-      -webkit-flex-shrink: 0;
-      -ms-flex-negative: 0;
-      flex-shrink: 0;
-      }
-      .demo-card-wide.mdl-card {
-        width: 512px;
-      }
-      .demo-card-wide > .mdl-card__title {
-        color: #fff;
-        height: 176px;
-        background: url('mucha.jpg') center / cover;
-      }
-      .demo-card-wide > .mdl-card__menu {
-        color: #fff;
-      }
-    </style>
-  </head>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	<title>回复</title>
 
-  <body>
-    <div id="feedback_div" class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
-      <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800" style="width: auto;">
-        <div class="mdl-layout__header-row">
-          <div onclick="window.location.href='../'" class="mdl-layout-title" style="margin-left: 0px;">苑舍意见反馈系统</div>
-          <div class="mdl-layout-spacer"></div>
-          <div style="display: inline-block;">
-            <form action="../result_web/result.html" method="GET" style="float:left; width: 30%;">
-              <div class="mdl-textfield mdl-js-textfield">
-                <input v-model="code" name='id' class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
-                <label class="mdl-textfield__label" for="sample2">Suggestion Code</label>
-                <span class="mdl-textfield__error">Not a number!</span>
-              </div>
-            </form>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" style="float:center;">
-              <label v-on:click="search_onclick" class="mdl-button mdl-js-button mdl-button--icon" for="search">
-                <i class="material-icons" onclick="window.location.href='../result_web/result.html'">search</i>
-              </label>
-            </div>
-          </div>
-        </div>
-      </header>
+	<link rel="stylesheet" href="../res/icon.css">
+	<link rel="stylesheet" href="../res/material.min.css">
+	<script src="../res/vue.js"></script>
+	<script src="../res/axios.min.js"></script>
+	<style>
+		#view-source {
+			position: fixed;
+			display: block;
+			right: 0;
+			bottom: 0;
+			margin-right: 40px;
+			margin-bottom: 40px;
+			z-index: 900;
+		}
 
-      <div class="demo-ribbon"></div>
+		.demo-ribbon {
+			width: 100%;
+			height: 10vh;
+			background-color: #3F51B5;
+			-webkit-flex-shrink: 0;
+			-ms-flex-negative: 0;
+			flex-shrink: 0;
+		}
 
-  
+		.demo-card-wide.mdl-card {
+			width: 512px;
+		}
 
-        <main class="demo-container mdl-grid" style="height: 100%; border: 3px; width: 60%">
+		.demo-card-wide>.mdl-card__title {
+			color: #fff;
+			height: 176px;
+			background: url('mucha.jpg') center / cover;
+		}
 
-          <div class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;"  v-show="content_show" >
-            <div v-for="suggestion in suggestion_list" class="mdl-card__supporting-text" style="word-break: break-all;">
-	      {{ suggestion.content }}
-            </div>
-            <div class="mdl-card__supporting-text">
-              <div class="mdl-textfield mdl-js-textfield">
-                <textarea v-model="content" class="mdl-textfield__input" type="text" rows= "3" id="content_div" ></textarea>
-                <label class="mdl-textfield__label" for="content_div">Enter your reply...</label>
-              </div>
-            </div>
-            <div class="mdl-card__actions mdl-card--border" style="text-align: center;">
-              <button v-on:click="submit_onclik" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                submit
-              </button>
-            </div>
-            <div class="mdl-card__menu">
-            </div>
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
-              <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
-              <span class="mdl-checkbox__label">公开展示</span>
-            </label>
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
-              <input type="checkbox" id="checkbox-2" class="mdl-checkbox__input" checked>
-              <span class="mdl-checkbox__label">结束对话</span>
-            </label>
-          </div>
+		.demo-card-wide>.mdl-card__menu {
+			color: #fff;
+		}
+	</style>
+</head>
 
-          <div v-show="result_show" class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;">
-            <div class="mdl-card__title">
-              <h2 class="mdl-card__title-text">Submit Successfully</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-              <p>CONGRATULATIONS!</p>
-            </div>
-            <div class="mdl-card__menu">
-            </div>
-          </div>
+<body>
+	<div id="feedback_div" class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
+		<header
+			class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800"
+			style="width: auto;">
+			<div class="mdl-layout__header-row">
+				<div onclick="window.location.href='../'" class="mdl-layout-title" style="margin-left: 0px;">苑舍意见反馈系统
+				</div>
+				<div class="mdl-layout-spacer"></div>
+				<div style="display: inline-block;">
+					<form action="../result_web/result.html" method="GET" style="float:left; width: 30%;">
+						<div class="mdl-textfield mdl-js-textfield">
+							<input v-model="code" name='id' class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?"
+								id="sample2">
+							<label class="mdl-textfield__label" for="sample2">Suggestion Code</label>
+							<span class="mdl-textfield__error">Not a number!</span>
+						</div>
+					</form>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" style="float:center;">
+						<label v-on:click="search_onclick" class="mdl-button mdl-js-button mdl-button--icon" for="search">
+							<i class="material-icons" onclick="window.location.href='../result_web/result.html'">search</i>
+						</label>
+					</div>
+				</div>
+			</div>
+		</header>
 
-        </main>
+		<div class="demo-ribbon"></div>
 
 
-      <footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
-        <span onclick="window.location.href='recognize.html'">Administrator</span>
-        <button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;" onclick="window.location.href='../result_web/results_all.html'">查询结果</button>
-      </footer>
 
-    </div>
-    <script src="../res/material.min.js"></script>
-    <script>
-      var url = window.location.href // 获取当前url
-      var dz_url = url.split('#')[0] // 获取#/之前的字符串
-      var cs = dz_url.split('?')[1] // 获取?之后的参数字符串
-      var cs_arr = cs.split('&')  // 参数字符串分割为数组
-      var cs={}
-      for(var i=0;i<cs_arr.length;i++){ // 遍历数组，拿到json对象
-     	cs[cs_arr[i].split('=')[0]] = cs_arr[i].split('=')[1]
-      }
-      this.id = cs.id //这样就拿到了参数中的数据
-      var feedback_app = new Vue({
-        el: '#feedback_div',
-        data: {
-    result_show: false,
-	  content_show: true,
-	  suggestion_list: [],
-	  content: '',
-	  code: null,
-        },
-        methods: {
-    result_show: true,
-	  content_show: false,
-	  search_onclick: function () {
-	    window.location.href = 'result_web/result.html?id='+this.code
-	  },
-          submit_onclik: function () {
-	    axios.post("/api/reply_suggestion/", {
-	      id: parseInt(cs['id']),
-	      content: feedback_app.content, 
-	    })
-	      .then(function (response) {
-		feedback_app.content_show = false
-		feedback_app.result_show = true
-	      })
-	      .catch(function (error) {
-		console.log(error)
-	      })
-          },
-        },
-	created: function () {
-	  axios.post('/api/get_suggestion_list_by_id/', {
-	    id: parseInt(cs['id']),
-	  })
-	    .then(function (response) {
-	      feedback_app.suggestion_list = response.data['suggestion_list']
-	    })
-	    .catch(function (error) {
-	      console.log(error)
-	    })
-	},
-      })
-    </script>
-  </body>
+		<main class="demo-container mdl-grid" style="height: 100%; border: 3px; width: 60%">
+
+			<div class="demo-card-wide mdl-card mdl-shadow--2dp" style="width: max-content; margin: auto;"
+				v-show="content_show">
+				<div v-for="suggestion in suggestion_list" class="mdl-card__supporting-text" style="word-break: break-all;">
+					{{ suggestion.content }}
+				</div>
+				<div class="mdl-card__supporting-text">
+					<div class="mdl-textfield mdl-js-textfield">
+						<textarea v-model="content" class="mdl-textfield__input" type="text" rows="3" id="content_div"></textarea>
+						<label class="mdl-textfield__label" for="content_div">Enter your reply...</label>
+					</div>
+				</div>
+				<div class="mdl-card__actions mdl-card--border" style="text-align: center;">
+					<button v-on:click="submit_onclik" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+						submit
+					</button>
+				</div>
+				<div class="mdl-card__menu">
+				</div>
+				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-1">
+					<input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" checked>
+					<span class="mdl-checkbox__label">公开展示</span>
+				</label>
+				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
+					<input type="checkbox" id="checkbox-2" class="mdl-checkbox__input" checked>
+					<span class="mdl-checkbox__label">结束对话</span>
+				</label>
+			</div>
+
+			<div v-show="result_show" class="demo-card-wide mdl-card mdl-shadow--2dp"
+				style="width: max-content; margin: auto;">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Submit Successfully</h2>
+				</div>
+				<div class="mdl-card__supporting-text">
+					<p>CONGRATULATIONS!</p>
+				</div>
+				<div class="mdl-card__menu">
+				</div>
+			</div>
+
+		</main>
+
+
+		<footer class="demo-footer mdl-mini-footer" style=" width: 100%;">
+			<span onclick="window.location.href='recognize.html'">Administrator</span>
+			<button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" style="margin-right: -39%;"
+				onclick="window.location.href='../result_web/results_all.html'">查询结果</button>
+		</footer>
+
+	</div>
+	<script src="../res/material.min.js"></script>
+	<script>
+		var url = window.location.href // 获取当前url
+		var dz_url = url.split('#')[0] // 获取#/之前的字符串
+		var cs = dz_url.split('?')[1] // 获取?之后的参数字符串
+		var cs_arr = cs.split('&')  // 参数字符串分割为数组
+		var cs = {}
+		for (var i = 0; i < cs_arr.length; i++) { // 遍历数组，拿到json对象
+			cs[cs_arr[i].split('=')[0]] = cs_arr[i].split('=')[1]
+		}
+		this.id = cs.id //这样就拿到了参数中的数据
+		var feedback_app = new Vue({
+			el: '#feedback_div',
+			data: {
+				result_show: false,
+				content_show: true,
+				suggestion_list: [],
+				content: '',
+				code: null,
+			},
+			methods: {
+				result_show: true,
+				content_show: false,
+				search_onclick: function () {
+					window.location.href = 'result_web/result.html?id=' + this.code
+				},
+				submit_onclik: function () {
+					axios.post("/api/reply_suggestion/", {
+						id: parseInt(cs['id']),
+						content: feedback_app.content,
+					})
+						.then(function (response) {
+							feedback_app.content_show = false
+							feedback_app.result_show = true
+						})
+						.catch(function (error) {
+							console.log(error)
+						})
+				},
+			},
+			created: function () {
+				axios.post('/api/get_suggestion_list_by_id/', {
+					id: parseInt(cs['id']),
+				})
+					.then(function (response) {
+						feedback_app.suggestion_list = response.data['suggestion_list']
+					})
+					.catch(function (error) {
+						console.log(error)
+					})
+			},
+		})
+	</script>
+</body>
+
 </html>
