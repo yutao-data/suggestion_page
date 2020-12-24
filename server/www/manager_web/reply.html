@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="../res/material.min.css">
 	<script src="../res/vue.js"></script>
 	<script src="../res/axios.min.js"></script>
+	<script src="../res/common.js"></script>
 	<style>
 		#view-source {
 			position: fixed;
@@ -133,15 +134,6 @@
 	</div>
 	<script src="../res/material.min.js"></script>
 	<script>
-		var url = window.location.href // 获取当前url
-		var dz_url = url.split('#')[0] // 获取#/之前的字符串
-		var cs = dz_url.split('?')[1] // 获取?之后的参数字符串
-		var cs_arr = cs.split('&')  // 参数字符串分割为数组
-		var cs = {}
-		for (var i = 0; i < cs_arr.length; i++) { // 遍历数组，拿到json对象
-			cs[cs_arr[i].split('=')[0]] = cs_arr[i].split('=')[1]
-		}
-		this.id = cs.id //这样就拿到了参数中的数据
 		var feedback_app = new Vue({
 			el: '#feedback_div',
 			data: {
@@ -157,7 +149,7 @@
 				},
 				submit_onclik: function () {
 					axios.post("/api/reply_suggestion/", {
-						id: parseInt(cs['id']),
+						id: parseInt(getQueryVariable('id')),
 						content: feedback_app.content,
 					})
 						.then(function (response) {
@@ -171,7 +163,7 @@
 			},
 			created: function () {
 				axios.post('/api/get_suggestion_list_by_id/', {
-					id: parseInt(cs['id']),
+					id: parseInt(getQueryVariable('id')),
 				})
 					.then(function (response) {
 						feedback_app.suggestion_list = response.data['suggestion_list']
