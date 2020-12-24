@@ -199,7 +199,7 @@ func genRandomId() int64 {
 	var suggestion Suggestion
 	var id int64
 	for {
-		id = rand.Int63() % 10000
+		id = rand.Int63() % 100000000
 		err := QueryByIdStmt.QueryRow(id).Scan(&suggestion)
 		if err == sql.ErrNoRows {
 			break
